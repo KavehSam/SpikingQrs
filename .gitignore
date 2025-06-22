@@ -1,0 +1,6 @@
+/.history/
+*.pyc
+*.pyc
+/runs/*
+/results/*
+*/__pycache__/*

@@ -1,0 +1,39 @@
+data:
+  chunk_size: 1
+  overlap: 2
+  detection_delay: -5
+  exclude_artifacts: true
+  sampling_rate: 250
+
+network:
+  input_size: 10
+  hidden_size: 50
+  output_size: 2
+  num_time_steps: 100
+  batch_size: 1
+  seed: 42
+
+learning:
+  learning_rate: 0.001
+  target_rate: 0.02
+  target_rate_min: 0.01
+  target_rate_max: 0.05
+
+stdp:
+  A_plus: 0.015
+  A_minus: 0.012
+  tau_plus: 20.0
+  tau_minus: 20.0
+
+homeostasis:
+  alpha: 0.1
+  beta: 0.01
+
+detection:
+  threshold: 0.5
+  min_interval: 0.2
+
+logging:
+  log_dir: runs
+  save_results: true
+  plotting: false
