@@ -1,4 +1,4 @@
-[Paper]
+[Paper](./docs/12_Preprint.pdf)
 
 # SpikingQrs
 A shallow and biologically plausible spiking neural network-based QRS detection system for ECG signal processing using adaptive homeostatic modulation for continual unsupervised learning. 
@@ -6,8 +6,6 @@ A shallow and biologically plausible spiking neural network-based QRS detection 
 This work will be presented at Computing in Cardiology 2025.
 
 ![Live Demo of SpikingQrs](./assets/SpikingQrs.gif)
-
-Under Construction 🚧
 
 ---
 
@@ -112,41 +110,57 @@ Each neuron's membrane potential $U_i$ is updated at each discrete time step $t$
 
 $$ U_i(t+1) = \beta U_i(t) + \sum_j W_{ij} S_j(t) $$
 
-When the membrane potential exceeds the neuron's adaptive threshold $ \Theta_i $, it fires a spike $ S_i(t+1) = 1 $ and its potential is reset to zero.
+When the membrane potential exceeds the neuron's adaptive threshold $\Theta_i$, it fires a spike $S_i(t+1) = 1$ and its potential is reset to zero.
 
 ### 2. STDP Synaptic Modification
 
-Synaptic weights $ W_{ij} $ are updated based on the temporal correlation of pre- and post-synaptic spikes, captured by synaptic traces.
+Synaptic weights $W_{ij}$ are updated based on the temporal correlation of pre- and post-synaptic spikes, captured by synaptic traces.
 
 **Synaptic Traces:**
-The pre-synaptic trace $T_{pre}$ and post-synaptic trace $T_{post}$ are updated as follows:
-$$ T_{pre,j}(t+1) = T_{pre,j}(t) \cdot e^{-1/\tau_+} + A_+ \cdot S_{pre,j}(t+1) $$
-$$ T_{post,i}(t+1) = T_{post,i}(t) \cdot e^{-1/\tau_-} + A_- \cdot S_{post,i}(t+1) $$
-where $ \tau_+ $ and $ \tau_- $ are the trace time constants, and $ A_+ $ and $ A_- $ are the learning amplitudes.
+
+The pre-synaptic trace and post-synaptic trace are updated as follows:
+
+$$T_{pre,j}(t+1) = T_{pre,j}(t) \cdot e^{-1/\tau_{+}} + A_{+} \cdot S_{j}(t+1)$$
+
+$$T_{post,i}(t+1) = T_{post,i}(t) \cdot e^{-1/\tau_{-}} + A_{-} \cdot S_{i}(t+1)$$
+
+where τ₊ and τ₋ are the trace time constants, and A₊ and A₋ are the learning amplitudes.
 
 **Weight Update:**
-The change in synaptic weight $ \Delta W_{ij} $ is calculated based on the outer product of these traces, modulated by a learning rate $ \eta $:
-$$ \Delta W_{ij} = \eta \cdot T_{post,i} \cdot T_{pre,j} $$
+
+The change in synaptic weight is calculated based on the outer product of these traces:
+
+$$\Delta W_{ij} = \eta \cdot T_{post,i} \cdot T_{pre,j}$$
 
 ### 3. Adaptive Homeostasis
 
-To maintain a stable firing rate $ R_i $ within a target range $[R_{min}, R_{max}]$, each neuron's firing threshold $ \Theta_i $ is adjusted dynamically.
+To maintain a stable firing rate $R_i$ within a target range $[R_{min}, R_{max}]$, each neuron's firing threshold $\Theta_i$ is adjusted dynamically.
 
 **Threshold Adjustment:**
+
 If the neuron's firing rate deviates from the target range, the threshold is adjusted:
-$$ \Delta \Theta_i = \begin{cases} -\alpha(R_{min} - R_i) & \text{if } R_i < R_{min} \\ 2\alpha(R_i - R_{max}) & \text{if } R_i > R_{max} \end{cases} $$
-where $ \alpha $ is the homeostasis scaling factor.
+
+$$\Delta \Theta_i = -\alpha(R_{min} - R_i) \text{ if } R_i < R_{min}$$
+
+$$\Delta \Theta_i = 2\alpha(R_i - R_{max}) \text{ if } R_i > R_{max}$$
+
+where α is the homeostasis scaling factor.
 
 **Threshold Decay:**
-The threshold then decays back towards a base value $ \Theta_{base} $, ensuring stability:
-$$ \Theta_i(t+1) = (\Theta_i(t) + \Delta \Theta_i) \cdot \delta_{decay} + (1 - \delta_{decay}) \Theta_{base} $$
+
+The threshold then decays back towards a base value, ensuring stability:
+
+$$\Theta_i(t+1) = (\Theta_i(t) + \Delta \Theta_i) \cdot \delta + (1 - \delta) \Theta_{base}$$
 
 ### 4. Activity-Dependent Weight Scaling
 
-For the output layer, the final synaptic weights are scaled by a factor $ \gamma $ that is dependent on the output neuron's firing rate $ R_{out} $:
-$$ \gamma = \sigma(10 \cdot (R_{max} - R_{out})) $$
-$$ W_{out} \leftarrow \gamma \cdot W_{out} $$
-where $ \sigma(x) $ is the sigmoid function. This mechanism reduces learning when the neuron is firing too frequently.
+For the output layer, the final synaptic weights are scaled by a factor γ that is dependent on the output neuron's firing rate:
+
+$$\gamma = \sigma(10 \cdot (R_{max} - R_{out}))$$
+
+$$W_{out} \leftarrow \gamma \cdot W_{out}$$
+
+where σ(x) is the sigmoid function. This mechanism reduces learning when the neuron is firing too frequently.
 
 # SpikingQRS Configuration System
 
